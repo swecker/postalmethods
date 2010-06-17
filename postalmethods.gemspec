@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name = %q{postalmethods}
-  s.version = "1.1.1"
+  s.version = "1.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["James Cox"]
-  s.date = %q{2008-12-28}
+  s.authors = ["James Cox", "Joe Fair"]
+  s.date = %q{2010-06-16}
   s.description = %q{API wrapper library for the postal methods api.}
   s.email = ["james@imaj.es"]
   s.extra_rdoc_files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.rdoc", "README.txt"]

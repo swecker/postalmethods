@@ -2,7 +2,7 @@ module PostalMethods
   
   module SendPostcard
     
-    def send_postcard_and_address(image_side_filename, address_side_filename, address, description="", work_mode = "Default")
+    def send_postcard_and_address(image_side_filename, address_side_filename, address, description="Sent at #{Time.now()}", work_mode = "Default")
       raise PostalMethods::NoPreparationException unless self.prepared 
       #raise PostalMethods::AddressNotHashException unless (address.class == Hash)
 
@@ -22,17 +22,6 @@ module PostalMethods
         :MailingPriority=>self.mailingPriority
       }
 
-      #:AttentionLine1 => " Attn line 1",
-      #:AttentionLine2 => " Attn line 2",
-      #:Company => " My Company",
-      #:Address1 => " 1261 S Idalia Ct",
-      #:Address2 => " Suite 455, box 8",
-      #:City => "Superior",
-      #:State => "CO",
-      #:PostalCode => "80027",
-      #:Country => "USA"
-
-      
       opts.merge!(address)
       rv = @rpc_driver.sendPostcardAndAddress(opts)
       
@@ -48,7 +37,7 @@ module PostalMethods
     
     def upload_file(doc_name, description="", overwrite=true, work_mode="") 
       file_name=File.basename(doc_name)
-      file_data = Base64.encode64(IO.read(doc_name) )
+      file_data = IO.read(doc_name)
       opts = {
          :APIKey => self.api_key,
 	 :MyFileName => file_name,

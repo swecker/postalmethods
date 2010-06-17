@@ -1,8 +1,10 @@
 begin
   require 'spec'
+  require 'hoe'
 rescue LoadError
   require 'rubygems'
   require 'spec'
+  require 'hoe'
 end
 begin
   require 'spec/rake/spectask'

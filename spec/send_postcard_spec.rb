@@ -24,7 +24,7 @@ describe "Send Postcard" do
       :AttentionLine1 => " Attn line 1",
       :AttentionLine2 => " Attn line 2",
       :Company => " My Company",
-      :Address1 => " 1261 S Idalia Ct",
+      :Address1 => " 1 Main St.",
       :Address2 => " Suite 455, box 8",
       :City => "Superior",
       :State => "CO",

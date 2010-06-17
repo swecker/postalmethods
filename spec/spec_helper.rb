@@ -12,7 +12,7 @@ require 'postalmethods'
 
 $VERBOSE = nil ##silence annoying warnings from soap4r
 
-PM_OPTS = {:username => 'imajes', :password => 'rubyr00ls'}
+PM_OPTS = {:api_key=>'Replace Me'}
 
 # hash hacks to make hacking in specs easier
 class Hash

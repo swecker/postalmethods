@@ -8,7 +8,7 @@ module PostalMethods
 
   class NoCredentialsException < Exception
     def initialize
-      super("You have failed to provide any credentials")
+      super("You have failed to provide any credentials (api key)")
     end
   end
   

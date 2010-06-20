@@ -4,11 +4,17 @@ module PostalMethods
     
     def send_postcard_and_address(image_side_filename, address_side_filename, address, description="Sent at #{Time.now()}", work_mode = "Default")
       raise PostalMethods::NoPreparationException unless self.prepared 
-      #raise PostalMethods::AddressNotHashException unless (address.class == Hash)
 
-      #self.document = doc
-      is_name = upload_file(image_side_filename)
-      as_name = upload_file(address_side_filename)
+      if( image_side_filename.index("MyFile:") )
+        is_name = image_side_filename
+      else
+        is_name = upload_file(image_side_filename)
+      end
+      if(address_side_filename.index("MyFile:") )
+        as_name = address_side_filename
+      else
+        as_name = upload_file(address_side_filename)
+      end
 
       ## push a postcard over the api
       opts = {:APIKey=> self.api_key,

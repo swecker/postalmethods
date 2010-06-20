@@ -4,11 +4,12 @@ describe "Send Postcard" do
   
   before :each do
     #Unique id - miliseconds
-    @sample_image_name = "spec/doc/sample_image.jpg"
     @time_id = (Time.now.to_f * 1000).to_i
+
+    @sample_image_name = "spec/doc/sample_image.jpg"
     @doc = open(File.dirname(__FILE__) + '/doc/sample.pdf')
     @client = PostalMethods::Client.new(PM_OPTS)
-#puts (@client.public_methods - Object.public_methods).sort
+
     @sample_data = Base64.encode64(IO.read(@sample_image_name) )
     @upload_details = {
       :MyFileName => "sample_file.jpg",
@@ -31,7 +32,7 @@ describe "Send Postcard" do
       :PostalCode => "80027",
       :Country => "USA"
     }
-    #res = driver.sendPostcardAndAddress( details )
+
   end
   
   it "should instantiate and send a postcard" do
@@ -42,6 +43,13 @@ describe "Send Postcard" do
   it "should upload a file" do
     @client.prepare!
     @client.upload_file(@sample_image_name).should == "MyFile:#{File.basename(@sample_image_name)}"
+  end
+
+  it "should upload a file THEN send a postcard" do
+    @client.prepare!
+    filename = @client.upload_file(@sample_image_name)
+    filename.should == "MyFile:#{File.basename(@sample_image_name)}"
+    @client.send_postcard_and_address(filename, filename, @address_details).should > 0
   end
 #  
 #  it "should refuse to send letter before prepare" do

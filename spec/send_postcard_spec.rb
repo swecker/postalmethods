@@ -10,39 +10,57 @@ describe "Send Postcard" do
     @doc = open(File.dirname(__FILE__) + '/doc/sample.pdf')
     @client = PostalMethods::Client.new(PM_OPTS)
 
-    @sample_data = Base64.encode64(IO.read(@sample_image_name) )
-    @upload_details = {
-      :MyFileName => "sample_file.jpg",
-      :FileBinaryData => @sample_data,
-      :Permissions => "Account",
-      :Description => "Sample File #{@time_id}",
-      :Overwrite => true
-    }
     @address_details = {
       :MyDescription=>"spec_test ---#{Time.now}---",
       :ImageSideFileType => "MyFile:sample_file.jpg",
       :AddressSideFileType => "MyFile:sample_file.jpg",
-      :AttentionLine1 => " Attn line 1",
-      :AttentionLine2 => " Attn line 2",
-      :Company => " My Company",
-      :Address1 => " 1 Main St.",
-      :Address2 => " Suite 455, box 8",
-      :City => "Superior",
-      :State => "CO",
-      :PostalCode => "80027",
+      :AttentionLine1 => "The White House",
+      :Address1 => "1600 Pennsylvania Avenue NW",
+      :City => "Washington",
+      :State => "DC",
+      :PostalCode => "20500",
       :Country => "USA"
     }
 
   end
   
-  it "should instantiate and send a postcard" do
-    @client.prepare!
-    @client.send_postcard_and_address(@sample_image_name, @sample_image_name, @address_details, "the long goodbye").should > 0
-  end
-
   it "should upload a file" do
     @client.prepare!
     @client.upload_file(@sample_image_name).should == "MyFile:#{File.basename(@sample_image_name)}"
+  end
+
+  it "should upload a file from local binary data" do
+    @client.prepare!
+    @sample_data = IO.read(@sample_image_name)
+    @upload_details = {
+      :MyFileName => "sample_image_file.jpg",
+      :FileBinaryData => @sample_data,
+      :Permissions => "Account",
+      :Description => "Sample File #{@time_id}",
+      :Overwrite => true
+    }
+    filename = @client.upload_file(@upload_details)
+    filename.should == "MyFile:sample_image_file.jpg"
+  end
+
+  it "should upload a file from local binary data THEN send a postcard" do
+    @client.prepare!
+    @sample_data = IO.read(@sample_image_name)
+    @upload_details = {
+      :MyFileName => "sample_image_file.jpg",
+      :FileBinaryData => @sample_data,
+      :Permissions => "Account",
+      :Description => "Sample File #{@time_id}",
+      :Overwrite => true
+    }
+    filename = @client.upload_file(@upload_details)
+    filename.should == "MyFile:sample_image_file.jpg"
+    @client.send_postcard_and_address(filename, filename, @address_details).should > 0
+  end
+
+  it "should instantiate and send a postcard" do
+    @client.prepare!
+    @client.send_postcard_and_address(@sample_image_name, @sample_image_name, @address_details, "Sample Postcard at #{Time.now()}").should > 0
   end
 
   it "should upload a file THEN send a postcard" do
@@ -51,26 +69,16 @@ describe "Send Postcard" do
     filename.should == "MyFile:#{File.basename(@sample_image_name)}"
     @client.send_postcard_and_address(filename, filename, @address_details).should > 0
   end
-#  
-#  it "should refuse to send letter before prepare" do
-#    lambda {@client.send_letter(@doc, "the long goodbye")}.should raise_error(PostalMethods::NoPreparationException)
-#  end  
-#  
-#  it "should raise the proper exception when trying to send textfile" do
-#    @doc = open(File.dirname(__FILE__) + '/../README.txt')
-#    @client.prepare!
-#    lambda {@client.send_letter(@doc, "the long goodbye")}.should raise_error(PostalMethods::APIStatusCode3004Exception)
-#  end
-#  
-#  it "should raise the proper exception when trying to send an empty string" do
-#    @client.prepare!
-#    lambda {@client.send_letter("", "the long goodbye")}.should raise_error(Errno::ENOENT)
-#  end
   
-  #it "should raise the proper exception when trying to send no description" do
-  #  @client.prepare!
-  #  lambda {@client.send_letter(@doc, nil)}.should raise_error(PostalMethods::APIStatusCode3004Exception)
-  #end
+  it "should refuse to send a postcard before prepare" do
+    lambda {@client.send_letter(@doc, "the long goodbye")}.should raise_error(PostalMethods::NoPreparationException)
+  end  
+  
+  it "should raise the proper exception when trying to send a missing file" do
+    @client.prepare!
+    lambda {@client.send_postcard_and_address("missing.jpg", "missing.jpg", @address_details)}.should raise_error(Errno::ENOENT)
+  end
+  
 end
 
 describe "Send Postcard With Address" do

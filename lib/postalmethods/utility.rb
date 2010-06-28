@@ -8,11 +8,16 @@ module PostalMethods
       raise PostalMethods::NoPreparationException unless self.prepared 
       
       ## get a letter as pdf over the wire
-      rv = @rpc_driver.getLetterDetailsV2(:Username => self.username, :Password => self.password, :ID => id) 
+      #rv = @rpc_driver.getDetails(:APIKey => self.api_key, :ID => id) 
+      rv = @rpc_driver.getDetailsExtended(:APIKey => self.api_key, :ID => id) 
+
+      if rv.getDetailsExtendedResult.resultCode.to_i != -3000
+        instance_eval("raise APIStatusCode#{rv.getDetailsExtendedResult.resultCode.to_s.gsub(/( |\-)/,'')}Exception")
+      end
       
-      status_code = rv.getLetterDetailsV2Result.resultCode.to_i
-      letter_data = rv.getLetterDetailsV2Result
-        work_mode = rv.getLetterDetailsV2Result.workMode.to_s
+      status_code = rv.getDetailsExtendedResult.resultCode.to_i
+      letter_data = rv.getDetailsExtendedResult
+        work_mode = rv.getDetailsExtendedResult.details.extendedDetails.workMode.to_s
             
       if status_code == -3000 # successfully received the req
         return [letter_data, status_code, work_mode]
@@ -27,7 +32,7 @@ module PostalMethods
       
       ## get a letter as pdf over the wire
       begin
-        rv = @rpc_driver.getPDF(:Username => self.username, :Password => self.password, :ID => id)
+        rv = @rpc_driver.getPDF(:APIKey => self.api_key, :ID => id)
       rescue SOAP::FaultError
         raise APIStatusCode3150Exception
       end
@@ -46,7 +51,7 @@ module PostalMethods
        raise PostalMethods::NoPreparationException unless self.prepared 
        
        ## get a letter as pdf over the wire
-       rv = @rpc_driver.cancelDelivery(:Username => self.username, :Password => self.password, :ID => id)
+       rv = @rpc_driver.cancelDelivery(:APIKey => self.api_key, :ID => id)
        
        status_code = rv.cancelDeliveryResult.to_i
       

@@ -12,8 +12,8 @@ describe "Send Postcard" do
 
     @address_details = {
       :MyDescription=>"spec_test ---#{Time.now}---",
-      :ImageSideFileType => "MyFile:sample_file.jpg",
-      :AddressSideFileType => "MyFile:sample_file.jpg",
+      #:ImageSideFileType => "MyFile:sample_file.jpg",
+      #:AddressSideFileType => "MyFile:sample_file.jpg",
       :AttentionLine1 => "The White House",
       :Address1 => "1600 Pennsylvania Avenue NW",
       :City => "Washington",

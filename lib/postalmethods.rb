@@ -54,7 +54,6 @@ module PostalMethods
 
       def prepare!
         begin
-	  #self.rpc_driver = SOAP::WSDLDriverFactory.new(File.dirname(__FILE__) + "/postalmethods.wsdl").create_rpc_driver
           self.rpc_driver = SOAP::WSDLDriverFactory.new(self.api_uri).create_rpc_driver
         rescue SocketError, RuntimeError
           raise PostalMethods::NoConnectionError

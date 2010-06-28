@@ -9,7 +9,7 @@ module PostalMethods
 
       
       self.document = doc
-      rv = @rpc_driver.sendLetter(:Username => self.username, :Password => self.password, :FileExtension => self.document[:extension], 
+      rv = @rpc_driver.sendLetter(:APIKey => self.api_key, :FileExtension => self.document[:extension], 
                                   :FileBinaryData => self.document[:bytes], :MyDescription => description, :WorkMode => self.work_mode)
       
       status_code = rv.sendLetterResult.to_i
@@ -28,7 +28,7 @@ module PostalMethods
       ## setup the document
       self.document = doc
 
-      opts = {:Username => self.username, :Password => self.password, :FileExtension => self.document[:extension], 
+      opts = {:APIKey=>self.api_key, :FileExtension => self.document[:extension], 
                                   :FileBinaryData => self.document[:bytes], :MyDescription => description, :WorkMode => self.work_mode}
                                   
       opts.merge!(address)

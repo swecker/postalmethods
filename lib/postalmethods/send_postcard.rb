@@ -59,7 +59,7 @@ module PostalMethods
 
     def upload_file_options_with_strings(doc_name, description="", overwrite=true, work_mode="") 
       file_name=File.basename(doc_name)
-      file_data = IO.read(doc_name)
+      file_data = open(doc_name, "rb") {|io| io.read } 
       opts = {
          :APIKey => self.api_key,
 	 :MyFileName => file_name,
@@ -74,27 +74,7 @@ module PostalMethods
     def upload_file_options_with_hash(user_opts)
       #Add in the api key
       user_opts.merge!({:APIKey=> self.api_key})
-
-      if true
-        return user_opts
-      end
-
-      status_code = self.rpc_driver.uploadFile(user_opts).uploadFileResult
-
-      if status_code == "-3000"
-        return "MyFile:#{user_opts[:MyFileName]}"
-      elsif API_STATUS_CODES.has_key?(status_code)
-        instance_eval("raise APIStatusCode#{status_code.to_s.gsub(/( |\-)/,'')}Exception")
-      end
-
-      #Handle the return value
-      status_code = rv.sendPostcardAndAddressResult.to_i
-     
-      if status_code > 0
-        return status_code
-      elsif API_STATUS_CODES.has_key?(status_code)
-        instance_eval("raise APIStatusCode#{status_code.to_s.gsub(/( |\-)/,'')}Exception")
-      end
+      return user_opts
     end
 
 

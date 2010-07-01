@@ -1,7 +1,7 @@
 = postalmethods
 
 * Info: http://www.postalmethods.com/resources/quickstart
-* Code: http://github.com/imajes/postalmethods/tree/master
+* Code: http://github.com/JoeAtBodkinConsulting/postalmethods
 
 == DESCRIPTION:
 
@@ -17,7 +17,7 @@ API wrapper library for the postal methods api.
 require 'postalmethods'
 
 @doc = open(File.dirname(__FILE__) + '/../spec/doc/sample.pdf')
-@client = PostalMethods::Client.new(:user => "user", :password => "password")
+@client = PostalMethods::Client.new(:api_key=>"your-key-here")
 rv = @client.send_letter(@doc, "description of doc")
 puts rv
 
@@ -29,6 +29,8 @@ puts rv
 
 * sudo gem install postalmethods
 * get a developer account at postalmethods.com
+* generate an api key
+* to run the tests, put your key in spec/spec_helper.rb on the line for PM_OPTS
 
 == LICENSE:
 

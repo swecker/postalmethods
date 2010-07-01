@@ -12,8 +12,6 @@ describe "Send Postcard" do
 
     @address_details = {
       :MyDescription=>"spec_test ---#{Time.now}---",
-      #:ImageSideFileType => "MyFile:sample_file.jpg",
-      #:AddressSideFileType => "MyFile:sample_file.jpg",
       :AttentionLine1 => "The White House",
       :Address1 => "1600 Pennsylvania Avenue NW",
       :City => "Washington",
@@ -31,7 +29,7 @@ describe "Send Postcard" do
 
   it "should upload a file from local binary data" do
     @client.prepare!
-    @sample_data = IO.read(@sample_image_name)
+    @sample_data = open(@sample_image_name, "rb") {|io| io.read } 
     @upload_details = {
       :MyFileName => "sample_image_file.jpg",
       :FileBinaryData => @sample_data,
@@ -89,32 +87,5 @@ describe "Send Postcard With Address" do
       :City => "Washington", :State => "DC", :PostalCode => "20500", :Country => "USA"}
     @client = PostalMethods::Client.new(PM_OPTS)
   end
-  
-#  it "should instantiate and send a letter with address" do
-#    @client.prepare!
-#    rv = @client.send_letter_with_address(@doc, "Shark Jumping Notes", @addr).should > 0
-#  end
-#  
-#  it "should raise the proper exception when trying to send letter without valid attention line" do
-#    @client.prepare!
-#    addr = @addr.except(:AttentionLine1)
-#    lambda {@client.send_letter_with_address(@doc, "the long goodbye", addr)}.should raise_error(PostalMethods::APIStatusCode4008Exception)
-#  end
-#  
-#  it "should refuse to send letter before prepare" do
-#    lambda {@client.send_letter_with_address(@doc, "the long goodbye", @addr)}.should raise_error(PostalMethods::NoPreparationException)
-#  end  
-#  
-#  it "should raise the proper exception when trying to send textfile" do
-#    @doc = open(File.dirname(__FILE__) + '/../README.txt')
-#    @client.prepare!
-#    lambda {@client.send_letter_with_address(@doc, "the long goodbye", @addr)}.should raise_error(PostalMethods::APIStatusCode3004Exception)
-#  end
-#  
-#  it "should raise the proper exception when trying to send an empty string" do
-#    @client.prepare!
-#    lambda {@client.send_letter_with_address("", "the long goodbye", @addr)}.should raise_error(Errno::ENOENT)
-#  end
-  
   
 end

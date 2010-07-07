@@ -1,12 +1,12 @@
 require 'postalmethods/version'
 
-AUTHOR = 'James Cox'  # can also be an array of Authors
-EMAIL = "james-at-imaj.es"
+AUTHOR = 'James Cox', 'Joe Fair'  # can also be an array of Authors
+EMAIL = "support@postalmethods.com"
 DESCRIPTION = "Wrapper for the Postal Methods API"
 GEM_NAME = 'postalmethods' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'postalmethods' # The unix name for your project
-HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
-DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
+HOMEPATH = 'http://www.postalmethods.com/'
+DOWNLOAD_PATH = "http://rubygems.org/gems/postalmethods"
 EXTRA_DEPENDENCIES = [
 #  ['activesupport', '>= 1.3.1']
 ]    # An array of rubygem dependencies [name, version]

@@ -7,11 +7,10 @@ describe "Send Postcard" do
     @time_id = (Time.now.to_f * 1000).to_i
 
     @sample_image_name = "spec/doc/sample_image.jpg"
-    @doc = open(File.dirname(__FILE__) + '/doc/sample.pdf')
+    @doc = open(File.dirname(__FILE__) + '/doc/sample.pdf', 'rb'){|io| io.read}
     @client = PostalMethods::Client.new(PM_OPTS)
 
     @address_details = {
-      :MyDescription=>"spec_test ---#{Time.now}---",
       :AttentionLine1 => "The White House",
       :Address1 => "1600 Pennsylvania Avenue NW",
       :City => "Washington",
@@ -76,16 +75,52 @@ describe "Send Postcard" do
     @client.prepare!
     lambda {@client.send_postcard_and_address("missing.jpg", "missing.jpg", @address_details)}.should raise_error(Errno::ENOENT)
   end
-  
-end
 
-describe "Send Postcard With Address" do
-  
-  before :each do
-    @doc = open(File.dirname(__FILE__) + '/../spec/doc/sample.pdf')
-    @addr = {:AttentionLine1 => "George Washington", :Address1 => "The White House", :Address2 => "1600 Pennsylvania Ave", 
-      :City => "Washington", :State => "DC", :PostalCode => "20500", :Country => "USA"}
-    @client = PostalMethods::Client.new(PM_OPTS)
+  it "should upload a template" do
+    @addr_template_filename = File.dirname(__FILE__) + '/../spec/doc/postcard_address_side_with_return_address.html'
+    @addr_template = open(@addr_template_filename, 'rb'){|io| io.read }
+    @client.prepare!
+    @client.upload_file(@addr_template_filename).should == "MyFile:#{File.basename(@addr_template_filename)}"
   end
   
+  it "should send a postcard with two templates" do
+    @img_template_filename = File.dirname(__FILE__) + '/../spec/doc/postcard_image_side_with_return_address.html'
+    @img_template = open(@img_template_filename, 'rb'){|io| io.read }
+    @addr_template_filename = File.dirname(__FILE__) + '/../spec/doc/postcard_address_side_with_return_address.html'
+    @addr_template = open(@addr_template_filename, 'rb'){|io| io.read }
+    opts={}
+
+    #Prepare address side
+    opts[:AddressSideFileType]="HTML"
+    opts[:MyDescription]="Sending Two Template Postcard #{Time.now}"
+    opts[:AddressSideBinaryData]=@addr_template
+
+    #Prepare image side
+    opts[:ImageSideFileType]="HTML"
+    opts[:ImageSideBinaryData]=@img_template
+
+    opts.merge!@address_details
+    @client.prepare!
+    @client.send_postcard_and_address_advanced(opts).should > 0
+  end
+
+  it "should send a postcard with an image and template" do
+    @addr_template_filename = File.dirname(__FILE__) + '/../spec/doc/postcard_address_side_with_return_address.html'
+    @addr_template = open(@addr_template_filename, 'rb'){|io| io.read }
+    opts={}
+
+    #Prepare address side
+    opts[:AddressSideFileType]="HTML"
+    opts[:MyDescription]="Sending Template Postcard #{Time.now}"
+    opts[:AddressSideBinaryData]=@addr_template
+
+    #Prepare image side
+    opts[:ImageSideFileType]="jpg"
+    opts[:ImageSideBinaryData]=open(@sample_image_name){|io| io.read}
+
+    opts.merge!@address_details
+    @client.prepare!
+    @client.send_postcard_and_address_advanced(opts).should > 0
+  end
+
 end
